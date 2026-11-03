@@ -1,0 +1,463 @@
+//1
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int main() {
+    char str[] = "Hello World";
+    char str1[12]; 
+    int i, len; 
+    
+    len = strlen(str); 
+    
+    for(i = 0; i < len; i++) {
+        str1[i] = str[i] ^ 0; 
+        printf("%c", str1[i]);
+    }
+    printf("\n");
+    
+    return 0;
+}
+
+//2
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int main()
+{
+  char str[] = "Hello World";
+  char str1[12];
+  char str2[12];
+  
+  int i, len;
+  len = strlen(str);
+  for (i = 0; i <= len; i++)
+  {
+    str1[i] = str[i] ^ 127;
+    printf("%c",str[i]);
+  }
+  printf("\n");
+  
+  len = strlen(str);
+  for (i = 0; i <= len; i++)
+  {
+    str1[i] = str[i] & 127;
+    printf("%c",str[i]);
+  }
+  printf("\n");
+  return 0;
+}
+
+//Ceaser Cipher
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Scanner;
+
+public class CeaserCipher {
+    static Scanner sc = new Scanner(System.in);
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    public static void main(String[] args) throws IOException {
+        System.out.print("Enter any String: ");
+        String str = br.readLine();
+        
+        System.out.print("\nEnter the Key: ");
+        int key = sc.nextInt();
+        
+        String encrypted = encrypt(str, key);
+        System.out.println("\nEncrypted String is: " + encrypted);
+        
+        String decrypted = decrypt(encrypted, key);
+        System.out.println("\nDecrypted String is: " + decrypted);
+        System.out.println("\n");
+    }
+
+    public static String encrypt(String str, int key) {
+        String encrypted = "";
+        for(int i = 0; i < str.length(); i++) {
+            int c = str.charAt(i);
+            
+            if (Character.isUpperCase(c)) {
+                c = c + (key % 26);
+                if (c > 'Z')
+                    c = c - 26;
+            } else if (Character.isLowerCase(c)) {
+                c = c + (key % 26);
+                if (c > 'z')
+                    c = c - 26;
+            }
+            encrypted += (char) c;
+        }
+        return encrypted;
+    }
+
+    public static String decrypt(String str, int key) {
+        String decrypted = "";
+        for(int i = 0; i < str.length(); i++) {
+            int c = str.charAt(i);
+            
+            if(Character.isUpperCase(c)) {
+                c = c - (key % 26);
+                if (c < 'A')
+                    c = c + 26;
+            } else if (Character.isLowerCase(c)) {
+                c = c - (key % 26);
+                if (c < 'a')
+                    c = c + 26;
+            }
+            decrypted += (char) c;
+        }
+        return decrypted;
+    }
+}
+
+//Substitution Cipher
+
+import java.io.*;
+import java.util.*;
+
+public class SubstitutionCipher {
+    static Scanner sc = new Scanner(System.in);
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    public static void main(String[] args) throws IOException {
+        String a = "abcdefghijklmnopqrstuvwxyz";
+        String b = "zyxwvutsrqponmlkjihgfedcba";
+        
+        System.out.print("Enter any string: ");
+        String str = br.readLine();
+        
+        String decrypt = "";
+        char c;
+        
+        for(int i = 0; i < str.length(); i++) {
+            c = str.charAt(i);
+            int j = a.indexOf(c);
+            decrypt = decrypt + b.charAt(j);
+        }
+        
+        System.out.println("The encrypted data is: " + decrypt);
+    }
+}
+
+//HillCipher
+
+import java.io.*;
+import java.util.*;
+
+public class HillCipher {
+    static float[][] decrypt = new float[3][1];
+    static float[][] a = new float[3][3];
+    static float[][] b = new float[3][3];
+    static float[][] mes = new float[3][1];
+    static float[][] res = new float[3][1];
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static Scanner sc = new Scanner(System.in);
+
+    public static void main(String[] args) throws IOException {
+        getkeymes();
+
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 1; j++)
+                for (int k = 0; k < 3; k++) {
+                    res[i][j] = res[i][j] + a[i][k] * mes[k][j];
+                }
+
+        System.out.print("\nEncrypted string is: ");
+        for (int i = 0; i < 3; i++) {
+            System.out.print((char) (res[i][0] % 26 + 97));
+            res[i][0] = res[i][0]; // Fixed syntax error from original "[i][0]=res[i][0];"
+        }
+
+        inverse();
+
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 1; j++)
+                for (int k = 0; k < 3; k++) {
+                    decrypt[i][j] = decrypt[i][j] + b[i][k] * res[k][j];
+                }
+
+        System.out.print("\nDecrypted string is: ");
+        for (int i = 0; i < 3; i++) {
+            System.out.print((char) (decrypt[i][0] % 26 + 97));
+        }
+        System.out.print("\n");
+    }
+
+    public static void getkeymes() throws IOException {
+        System.out.println("Enter 3x3 matrix for key (It should be inversible): ");
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++)
+                a[i][j] = sc.nextFloat();
+
+        System.out.print("\nEnter a 3 letter string: ");
+        String msg = br.readLine();
+
+        for (int i = 0; i < 3; i++)
+            mes[i][0] = msg.charAt(i) - 97;
+    }
+
+    public static void inverse() {
+        float p, q;
+        float[][] c = a;
+
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++) {
+                if (i == j)
+                    b[i][j] = 1;
+                else
+                    b[i][j] = 0;
+            }
+
+        for (int k = 0; k < 3; k++) {
+            for (int i = 0; i < 3; i++) {
+                p = c[i][k];
+                q = c[k][k];
+                for (int j = 0; j < 3; j++) {
+                    if (i != k) {
+                        c[i][j] = c[i][j] * q - p * c[k][j];
+                        b[i][j] = b[i][j] * q - p * b[k][j];
+                    }
+                }
+            }
+        }
+
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++) {
+                b[i][j] = b[i][j] / c[i][i];
+            }
+
+        System.out.println("");
+        System.out.println("\nInverse Matrix is: ");
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++)
+                System.out.print(b[i][j] + " ");
+            System.out.print("\n");
+        }
+    }
+}
+
+//week4 Write a Java program to implement the DES algorithm logic.
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.security.spec.KeySpec;
+import java.util.Base64;
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.DESedeKeySpec;
+
+public class DES {
+    private static final String UNICODE_FORMAT = "UTF8";
+    public static final String DESEDE_ENCRYPTION_SCHEME = "DESede";
+    
+    private KeySpec myKeySpec;
+    private SecretKeyFactory mySecretKeyFactory;
+    private Cipher cipher;
+    byte[] keyAsBytes;
+    private String myEncryptionKey;
+    private String myEncryptionScheme;
+    SecretKey key;
+    
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    public DES() throws Exception {
+        myEncryptionKey = "ThisIsSecretEncryptionKey";
+        myEncryptionScheme = DESEDE_ENCRYPTION_SCHEME;
+        keyAsBytes = myEncryptionKey.getBytes(UNICODE_FORMAT);
+        myKeySpec = new DESedeKeySpec(keyAsBytes);
+        mySecretKeyFactory = SecretKeyFactory.getInstance(myEncryptionScheme);
+        cipher = Cipher.getInstance(myEncryptionScheme);
+        key = mySecretKeyFactory.generateSecret(myKeySpec);
+    }
+
+    public String encrypt(String unencryptedString) {
+        String encryptedString = null;
+        try {
+            cipher.init(Cipher.ENCRYPT_MODE, key);
+            byte[] plainText = unencryptedString.getBytes(UNICODE_FORMAT);
+            byte[] encryptedText = cipher.doFinal(plainText);
+            
+            // Updated to use modern java.util.Base64
+            encryptedString = Base64.getEncoder().encodeToString(encryptedText);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return encryptedString;
+    }
+
+    public String decrypt(String encryptedString) {
+        String decryptedText = null;
+        try {
+            cipher.init(Cipher.DECRYPT_MODE, key);
+            
+            // Updated to use modern java.util.Base64
+            byte[] encryptedText = Base64.getDecoder().decode(encryptedString);
+            byte[] plainText = cipher.doFinal(encryptedText);
+            decryptedText = bytes2String(plainText);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return decryptedText;
+    }
+
+    private static String bytes2String(byte[] bytes) {
+        StringBuffer stringBuffer = new StringBuffer();
+        for (int i = 0; i < bytes.length; i++) {
+            stringBuffer.append((char) bytes[i]);
+        }
+        return stringBuffer.toString();
+    }
+
+    public static void main(String args[]) throws Exception {
+        System.out.print("Enter the string: ");
+        DES myEncryptor = new DES();
+        String stringToEncrypt = br.readLine();
+        
+        // Completed the missing logic from the lab manual
+        String encrypted = myEncryptor.encrypt(stringToEncrypt);
+        String decrypted = myEncryptor.decrypt(encrypted);
+        
+        System.out.println("\nString To Encrypt: " + stringToEncrypt);
+        System.out.println("\nEncrypted Value: " + encrypted);
+        System.out.println("\nDecrypted Value: " + decrypted);
+        System.out.println("");
+    }
+}
+
+//week5 Write a C/JAVA program to implement the BlowFish algorithm logic.
+
+import java.io.*;
+import java.security.Key;
+import java.util.Base64;
+import javax.crypto.Cipher;
+import javax.crypto.CipherOutputStream;
+import javax.crypto.KeyGenerator;
+
+public class BlowFish {
+    public static void main(String[] args) throws Exception {
+        
+        KeyGenerator keyGenerator = KeyGenerator.getInstance("Blowfish");
+        keyGenerator.init(128);
+        Key secretKey = keyGenerator.generateKey();
+        
+        Cipher cipherOut = Cipher.getInstance("Blowfish/CFB/NoPadding");
+        cipherOut.init(Cipher.ENCRYPT_MODE, secretKey);
+        
+        byte iv[] = cipherOut.getIV();
+        if (iv != null) {
+            // Updated to use modern java.util.Base64
+            String encodedIV = Base64.getEncoder().encodeToString(iv);
+            System.out.println("Initialization Vector of the Cipher: " + encodedIV);
+        }
+        
+        FileInputStream fin = new FileInputStream("inputFile.txt");
+        FileOutputStream fout = new FileOutputStream("outputFile.txt");
+        CipherOutputStream cout = new CipherOutputStream(fout, cipherOut);
+        
+        int input = 0;
+        while ((input = fin.read()) != -1) {
+            cout.write(input);
+        }
+        
+        fin.close();
+        cout.close();
+        
+        System.out.println("Encryption complete. Check outputFile.txt");
+    }
+}
+
+//week7 Write the RC4 logic in Java Using Java Cryptography, encryptthetext“Hello
+world” using BlowFish. Createyour own key using Javakeytool.
+
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.swing.JOptionPane;
+
+public class BlowFishCipher {
+    public static void main(String[] args) throws Exception {
+        
+        // create a key generator based upon the Blowfish cipher
+        KeyGenerator keygenerator = KeyGenerator.getInstance("Blowfish");
+        
+        // create a key
+        SecretKey secretkey = keygenerator.generateKey();
+        
+        // create a cipher based upon Blowfish
+        Cipher cipher = Cipher.getInstance("Blowfish");
+        
+        // initialise cipher with secret key
+        cipher.init(Cipher.ENCRYPT_MODE, secretkey);
+        
+        // get the text to encrypt
+        String inputText = JOptionPane.showInputDialog("Input your message: ");
+        
+        // encrypt message
+        byte[] encrypted = cipher.doFinal(inputText.getBytes());
+        
+        // re-initialise the cipher to be in decrypt mode
+        cipher.init(Cipher.DECRYPT_MODE, secretkey);
+        
+        // decrypt message
+        byte[] decrypted = cipher.doFinal(encrypted);
+        
+        // and display the results
+        JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), 
+            "\nEncrypted text: " + new String(encrypted) + 
+            "\n\nDecrypted text: " + new String(decrypted));
+            
+        System.exit(0);
+    }
+}
+
+//week8 Write a Java program to implement RSA Algoithm
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.math.BigInteger;
+import java.util.Random;
+import java.util.Scanner;
+
+public class RSA {
+    static Scanner sc = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        System.out.print("Enter a Prime number: ");
+        BigInteger p = sc.nextBigInteger(); // Here's one prime number..
+        
+        System.out.print("Enter another prime number: ");
+        BigInteger q = sc.nextBigInteger(); // ..and another.
+        
+        BigInteger n = p.multiply(q);
+        BigInteger n2 = p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE));
+        
+        BigInteger e = generateE(n2);
+        BigInteger d = e.modInverse(n2); // Here's the multiplicative inverse
+        
+        System.out.println("Encryption keys are: " + e + ", " + n);
+        System.out.println("Decryption keys are: " + d + ", " + n);
+    }
+
+    public static BigInteger generateE(BigInteger fiofn) {
+        int y, intGCD;
+        BigInteger e;
+        BigInteger gcd;
+        Random x = new Random();
+        
+        do {
+            y = x.nextInt(fiofn.intValue() - 1);
+            String z = Integer.toString(y);
+            e = new BigInteger(z);
+            gcd = fiofn.gcd(e);
+            intGCD = gcd.intValue();
+        } while (y <= 2 || intGCD != 1);
+        
+        return e;
+    }
+}
