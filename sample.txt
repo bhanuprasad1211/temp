@@ -461,3 +461,117 @@ public class RSA {
         return e;
     }
 }
+
+// =================== DES =================================
+import javax.crypto.*;
+import javax.crypto.spec.*;
+import java.util.*;
+
+public class des
+{
+	public static void main(String[] args) throws Exception
+	{
+		KeyGenerator kg = KeyGenerator.getInstance("DES");
+		kg.init(56);
+		SecretKey key = kg.generateKey();
+		
+		String text = "Helloworld";
+		Cipher c = Cipher.getInstance("DES");
+		
+		c.init(Cipher.ENCRYPT_MODE,key);
+		byte[] enc = c.doFinal(text.getBytes());
+		
+		System.out.println("Original: "+text);
+		System.out.println("Encrypted: "+Base64.getEncoder().encodeToString(enc));
+		
+		c.init(Cipher.DECRYPT_MODE,key);
+		byte[] dec = c.doFinal(enc);
+		
+		System.out.println("Decrypted: "+new String(dec));
+		
+		}
+}
+
+// ===================Blowfish =================================
+import java.util.*;
+import javax.crypto.*;
+import javax.crypto.spec.*;
+
+public class blowfish
+{
+	public static void main(String args[]) throws Exception
+	{
+		KeyGenerator kg = KeyGenerator.getInstance("Blowfish");
+		kg.init(128);
+		SecretKey key = kg.generateKey();
+		
+		String text = "Hello Worlld";
+		Cipher c = Cipher.getInstance("Blowfish");
+		
+		c.init(Cipher.ENCRYPT_MODE,key);
+		byte[] enc = c.doFinal(text.getBytes());
+		
+		System.out.println("Encrypted: "+Base64.getEncoder().encodeToString(enc));
+		
+		c.init(Cipher.DECRYPT_MODE,key);
+		byte[] dec = c.doFinal(enc);
+		
+		System.out.println("Decrypted: "+new String(dec));
+	}
+}
+
+//-------------RC4 ----------------------------------------------
+
+import java.util.*;
+import javax.crypto.*;
+import javax.crypto.spec.*;
+
+public class RC4
+{
+	public static void main(String[] args) throws Exception
+	{
+		SecretKey key = new SecretKeySpec("mysecretkey".getBytes(),"RC4");
+		
+		String text = "Hello World";
+		Cipher c = Cipher.getInstance("RC4");
+		
+		c.init(Cipher.ENCRYPT_MODE,key);
+		byte[] enc = c.doFinal(text.getBytes());
+		
+		System.out.println("Original: "+text);
+		System.out.println("Encrypted: "+Base64.getEncoder().encodeToString(enc));
+		
+		c.init(Cipher.DECRYPT_MODE,key);
+		byte[] dec = c.doFinal(enc);
+		
+		System.out.println("Decrypted: "+new String(dec));
+	}
+}
+
+// =================== RSA =================================
+import javax.crypto.*;
+import java.util.*;
+import java.security.*;
+
+public class rsa
+{
+	public static void main(String args[]) throws Exception
+	{
+		KeyPairGenerator kg = KeyPairGenerator.getInstance("RSA");
+		kg.initialize(2048);
+		KeyPair kp = kg.generateKeyPair();
+		
+		String text = "Hello world";
+		Cipher c = Cipher.getInstance("RSA");
+		
+		c.init(Cipher.ENCRYPT_MODE,kp.getPublic());
+		byte[] enc = c.doFinal(text.getBytes());
+		
+		System.out.println("Encrypted: "+Base64.getEncoder().encodeToString(enc));
+		
+		c.init(Cipher.DECRYPT_MODE,kp.getPrivate());
+		byte[] dec = c.doFinal(enc);
+		
+		System.out.println("Decrypted: "+new String(dec));
+	}
+}
